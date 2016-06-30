@@ -82,6 +82,16 @@ class Powertap:
 #                self.text.insert('1.0', 'Cadence:  %s\n' % (cadence, ))
 #                print(str(data[6
 #                self.text.see('1.0')
+                
+        elif page_number == '13': #torque effectiveness
+             print(str(data))
+             if (data[3] != 0xFF and data[2] != 0xFF) and data[1] != self.update_event_count:
+                right_torque = data[3]*0.5
+                left_torque = data[2]*0.5
+                self.update_event_count = data[1]
+                print('Right Torque : ' + str(right_torque) +'% || Left Torque : ' + str(left_torque) +'%')
+#                self.datafile.write(str(time.time()) +'\t'+str(cadence) + '\t'+ str(power) + '\n')
+
         
         
         elif page_number == '01': #calibration response main data page

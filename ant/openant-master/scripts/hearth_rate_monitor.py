@@ -26,33 +26,38 @@ from ant.easy.node import Node
 from ant.easy.channel import Channel
 from ant.base.message import Message
 
-import logging
+#import logging
 import struct
 import threading
 import sys
+import time
 
 NETWORK_KEY= [0xb9, 0xa5, 0x21, 0xfb, 0xbd, 0x72, 0xc3, 0x45]
 
-
-def on_data(data):
-    hearthrate = data[7]
-    string = "Hearthrate: " + str(data[7]) + "   "
-
-    sys.stdout.write(string)
-    sys.stdout.flush()
-    sys.stdout.write("\b" * len(string))
-
-
+class HRM:
+    def __init__(self):
+        self.hr_file = open('/home/cybathlon/Bureau/Cybathlon/data_files/hr.txt','w+')  
+    
+    def on_data(self, data):
+        self.hr_file = open('/home/cybathlon/Bureau/Cybathlon/data_files/hr.txt','a')  
+        self.hr_file.write(str(time.time()) + '\t' + str(data[7])+'\n')
+        
+        string = "Hearthrate: " + str(data[7]) + "\n"
+        sys.stdout.write(string)
+#        sys.stdout.flush
+    
+    
 def main():
     # logging.basicConfig()
 
+    hrm = HRM() 
     node = Node()
     node.set_network_key(0x00, NETWORK_KEY)
 
     channel = node.new_channel(Channel.Type.BIDIRECTIONAL_RECEIVE)
 
-    channel.on_broadcast_data = on_data
-    channel.on_burst_data = on_data
+    channel.on_broadcast_data = hrm.on_data
+    channel.on_burst_data = hrm.on_data
 
     channel.set_period(8070)
     channel.set_search_timeout(12)
@@ -63,8 +68,10 @@ def main():
         channel.open()
         node.start()
     finally:
-        node.stop()
-    
+        node.stop()                                        
+
+   
+        
 if __name__ == "__main__":
     main()
 
