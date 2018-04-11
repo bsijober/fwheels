@@ -1,0 +1,1 @@
+time 	 pedal_angle(deg) 	 bike speed(km/h) 	 distance(m) 	 cadence(rpm) 	 power(W) 	 total_power(W) 	 HR(bpm) 
